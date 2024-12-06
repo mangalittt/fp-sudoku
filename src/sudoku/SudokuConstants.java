@@ -5,16 +5,12 @@
  * Group #9
  * 1 - 5026231131 - Davin Jonathan Tanus
  * 2 - 5026231115 - Komang Alit Pujangga
- * 3 - 5026231218 - Jeremy Danial Haposan Siregar
+ * 3 - Student ID - Student Name 3
  */
 
 package sudoku;
-/**
- * Define the named constants used in many classes.
- */
+
 public class SudokuConstants {
-    /** Size of the board */
     public static final int GRID_SIZE = 9;
-    /** Size of sub-grid of the board */
     public static final int SUBGRID_SIZE = 3;
 }
