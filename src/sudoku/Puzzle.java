@@ -5,16 +5,15 @@
  * Group #9
  * 1 - 5026231131 - Davin Jonathan Tanus
  * 2 - 5026231115 - Komang Alit Pujangga
- * 3 - 5026231218 - Jeremy Danial Haposan Siregar
+ * 3 - Student ID - Student Name 3
  */
 
 package sudoku;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 
-/**
- * The Sudoku number puzzle to be solved
- */
 public class Puzzle {
     int[][] numbers = new int[SudokuConstants.GRID_SIZE][SudokuConstants.GRID_SIZE];
     boolean[][] isGiven = new boolean[SudokuConstants.GRID_SIZE][SudokuConstants.GRID_SIZE];
@@ -25,37 +24,108 @@ public class Puzzle {
     }
 
     public void newPuzzle(int cellsToGuess) {
-        // Puzzle tetap sama untuk testing
-        int[][] hardcodedNumbers =
-                {{5, 3, 4, 6, 7, 8, 9, 1, 2},
-                        {6, 7, 2, 1, 9, 5, 3, 4, 8},
-                        {1, 9, 8, 3, 4, 2, 5, 6, 7},
-                        {8, 5, 9, 7, 6, 1, 4, 2, 3},
-                        {4, 2, 6, 8, 5, 3, 7, 9, 1},
-                        {7, 1, 3, 9, 2, 4, 8, 5, 6},
-                        {9, 6, 1, 5, 3, 7, 2, 8, 4},
-                        {2, 8, 7, 4, 1, 9, 6, 3, 5},
-                        {3, 4, 5, 2, 8, 6, 1, 7, 9}};
-
-        // Salin angka ke puzzle
         for (int row = 0; row < SudokuConstants.GRID_SIZE; ++row) {
             for (int col = 0; col < SudokuConstants.GRID_SIZE; ++col) {
-                numbers[row][col] = hardcodedNumbers[row][col];
-                isGiven[row][col] = true; // Default semua kotak diberikan
+                numbers[row][col] = 0;
+                isGiven[row][col] = false;
             }
         }
 
-        // Buat kotak kosong secara acak
-        int emptyCells = 0;
-        while (emptyCells < cellsToGuess) {
-            int row = (int) (Math.random() * SudokuConstants.GRID_SIZE);
-            int col = (int) (Math.random() * SudokuConstants.GRID_SIZE);
+        if (generatePuzzle()) {
+            shuffleGrid();
 
-            // Jika kotak ini belum kosong, kosongkan
-            if (isGiven[row][col]) {
-                isGiven[row][col] = false; // Tandai sebagai kotak kosong
-                emptyCells++;
+            int emptyCells = 0;
+            while (emptyCells < cellsToGuess) {
+                int row = (int) (Math.random() * SudokuConstants.GRID_SIZE);
+                int col = (int) (Math.random() * SudokuConstants.GRID_SIZE);
+
+                if (isGiven[row][col]) {
+                    isGiven[row][col] = false;
+                    emptyCells++;
+                }
             }
+        }
+    }
+
+    private boolean generatePuzzle() {
+        return fillGrid(0, 0);
+    }
+
+    private boolean fillGrid(int row, int col) {
+        if (row == SudokuConstants.GRID_SIZE) {
+            return true;
+        }
+
+        if (col == SudokuConstants.GRID_SIZE) {
+            return fillGrid(row + 1, 0);
+        }
+
+        ArrayList<Integer> numbersList = new ArrayList<>();
+        for (int num = 1; num <= 9; num++) {
+            numbersList.add(num);
+        }
+        Collections.shuffle(numbersList);
+
+        for (int num : numbersList) {
+            if (isSafe(row, col, num)) {
+                numbers[row][col] = num;
+                isGiven[row][col] = true;
+
+                if (fillGrid(row, col + 1)) {
+                    return true;
+                }
+
+                numbers[row][col] = 0;
+                isGiven[row][col] = false;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean isSafe(int row, int col, int num) {
+        for (int i = 0; i < SudokuConstants.GRID_SIZE; i++) {
+            if (numbers[row][i] == num || numbers[i][col] == num) {
+                return false;
+            }
+        }
+
+        int subGridRow = row / SudokuConstants.SUBGRID_SIZE;
+        int subGridCol = col / SudokuConstants.SUBGRID_SIZE;
+        for (int i = subGridRow * SudokuConstants.SUBGRID_SIZE; i < (subGridRow + 1) * SudokuConstants.SUBGRID_SIZE; i++) {
+            for (int j = subGridCol * SudokuConstants.SUBGRID_SIZE; j < (subGridCol + 1) * SudokuConstants.SUBGRID_SIZE; j++) {
+                if (numbers[i][j] == num) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    private void shuffleGrid() {
+        ArrayList<Integer> nums = new ArrayList<>();
+        for (int i = 1; i <= 9; i++) {
+            nums.add(i);
+        }
+
+        for (int row = 0; row < SudokuConstants.GRID_SIZE; row++) {
+            Collections.shuffle(nums);
+            for (int col = 0; col < SudokuConstants.GRID_SIZE; col++) {
+                int randomNum = nums.get(col);
+                if (isSafe(row, col, randomNum)) {
+                    numbers[row][col] = randomNum;
+                }
+            }
+        }
+    }
+
+    public void printPuzzle() {
+        for (int row = 0; row < SudokuConstants.GRID_SIZE; ++row) {
+            for (int col = 0; col < SudokuConstants.GRID_SIZE; ++col) {
+                System.out.print(numbers[row][col] + " ");
+            }
+            System.out.println();
         }
     }
 }
