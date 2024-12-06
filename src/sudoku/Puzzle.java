@@ -5,7 +5,7 @@
  * Group #9
  * 1 - 5026231131 - Davin Jonathan Tanus
  * 2 - 5026231115 - Komang Alit Pujangga
- * 3 - Student ID - Student Name 3
+ * 3 - Student ID - Jeremy Danial Haposan Siregar
  */
 
 package sudoku;
