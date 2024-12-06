@@ -5,56 +5,89 @@
  * Group #9
  * 1 - 5026231131 - Davin Jonathan Tanus
  * 2 - 5026231115 - Komang Alit Pujangga
- * 3 - 5026231218 - Jeremy Danial Haposan Siregar
+ * 3 - Student ID - Student Name 3
  */
-
 package sudoku;
 
-import java.awt.*;
 import javax.swing.*;
+import java.awt.*;
 
 public class Sudoku extends JFrame {
     private static final long serialVersionUID = 1L;
 
-    // Private variables
     GameBoardPanel board = new GameBoardPanel();
     JButton btnNewGame = new JButton("New Game");
     JButton btnNextLevel = new JButton("Next Level");
 
-    private int currentLevel = 1; // Menyimpan level permainan saat ini
+    private int currentLevel = 1;
 
-    // Constructor
     public Sudoku() {
         Container cp = getContentPane();
         cp.setLayout(new BorderLayout());
 
         cp.add(board, BorderLayout.CENTER);
 
-        // Panel untuk tombol
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(btnNewGame);
         buttonPanel.add(btnNextLevel);
         cp.add(buttonPanel, BorderLayout.SOUTH);
 
-        // Tombol New Game
+        JMenuBar menuBar = new JMenuBar();
+
+        JMenu fileMenu = new JMenu("Game");
+        JMenuItem newGameMenu = new JMenuItem("New Game");
+        newGameMenu.addActionListener(e -> newGame(30));
+        fileMenu.add(newGameMenu);
+
+        JMenuItem resetMenu = new JMenuItem("Reset");
+        resetMenu.addActionListener(e -> {
+            board.resetInputs();
+        });
+        fileMenu.add(resetMenu);
+
+        JMenuItem exitMenu = new JMenuItem("Exit");
+        exitMenu.addActionListener(e -> System.exit(0));
+        fileMenu.add(exitMenu);
+
+        menuBar.add(fileMenu);
+
+        JMenu optionsMenu = new JMenu("Difficulty");
+        JMenuItem easyOption = new JMenuItem("Easy");
+        easyOption.addActionListener(e -> setDifficulty(30));
+        JMenuItem intermediateOption = new JMenuItem("Intermediate");
+        intermediateOption.addActionListener(e -> setDifficulty(40));
+        JMenuItem hardOption = new JMenuItem("Hard");
+        hardOption.addActionListener(e -> setDifficulty(50));
+        optionsMenu.add(easyOption);
+        optionsMenu.add(intermediateOption);
+        optionsMenu.add(hardOption);
+        menuBar.add(optionsMenu);
+
+        setJMenuBar(menuBar);
+
         btnNewGame.addActionListener(e -> {
-            currentLevel = 1; // Reset level
-            board.newGame(currentLevel * 2); // Kotak kosong awal (misalnya 5)
+            currentLevel = 1;
+            setDifficulty(30);
         });
 
-        // Tombol Next Level
         btnNextLevel.addActionListener(e -> {
-            currentLevel++; // Tingkatkan level
-            board.newGame(currentLevel * 2); // Tambah jumlah kotak kosong per level
+            currentLevel++;
+            setDifficulty(currentLevel * 10);
         });
 
-        // Mulai permainan dengan level 1
-        board.newGame(currentLevel * 2);
+        setDifficulty(30);
 
-        pack(); // Pack the UI components
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Handle window-closing
+        pack();
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setTitle("Sudoku");
         setVisible(true);
     }
-}
 
+    private void setDifficulty(int cellsToGuess) {
+        board.newGame(cellsToGuess);
+    }
+
+    private void newGame(int cellsToGuess) {
+        board.newGame(cellsToGuess);
+    }
+}
